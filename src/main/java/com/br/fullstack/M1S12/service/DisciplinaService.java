@@ -3,20 +3,27 @@ package com.br.fullstack.M1S12.service;
 import com.br.fullstack.M1S12.controller.dto.request.DisciplinaRequest;
 import com.br.fullstack.M1S12.controller.dto.response.DisciplinaResponse;
 import com.br.fullstack.M1S12.entity.DisciplinaEntity;
+import com.br.fullstack.M1S12.entity.ProfessorEntity;
 import com.br.fullstack.M1S12.exception.NotFoundException;
 import com.br.fullstack.M1S12.repository.DisciplinaRepository;
+import com.br.fullstack.M1S12.repository.ProfessorRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class DisciplinaService {
 
     private final DisciplinaRepository disciplinaRepository;
+
+    @Autowired
+    private ProfessorRepository professorRepository;
 
     public List<DisciplinaResponse> retornarDisciplinas() {
         List<DisciplinaEntity> listaDisciplinasEntity = disciplinaRepository.findAll();
@@ -46,7 +53,8 @@ public class DisciplinaService {
     public DisciplinaResponse salvarDisciplina(@RequestBody DisciplinaRequest disciplinaRequest) {
         DisciplinaEntity disciplinaEntity = new DisciplinaEntity();
         disciplinaEntity.setNome(disciplinaRequest.nome());
-        disciplinaEntity.setProfessor(disciplinaRequest.professor());
+        Optional<ProfessorEntity> professor = professorRepository.findById(disciplinaRequest.professorId());
+        disciplinaEntity.setProfessor(professor.get());
 
         DisciplinaEntity disciplinaSalva = disciplinaRepository.save(disciplinaEntity);
         return new DisciplinaResponse(disciplinaSalva.getId(), disciplinaSalva.getNome(), disciplinaSalva.getProfessor());
@@ -57,7 +65,8 @@ public class DisciplinaService {
                 new NotFoundException("Disciplina com o id " + id + " não encontrada."));
 
         disciplinaExistente.setNome(disciplinaRequest.nome());
-        disciplinaExistente.setProfessor(disciplinaRequest.professor());
+        Optional<ProfessorEntity> professor = professorRepository.findById(disciplinaRequest.professorId());
+        disciplinaExistente.setProfessor(professor.get());
 
         DisciplinaEntity disciplinaAtualizada = disciplinaRepository.save(disciplinaExistente);
         return new DisciplinaResponse(disciplinaAtualizada.getId(), disciplinaAtualizada.getNome(), disciplinaAtualizada.getProfessor());
