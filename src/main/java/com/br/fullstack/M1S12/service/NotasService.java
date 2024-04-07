@@ -1,13 +1,19 @@
 package com.br.fullstack.M1S12.service;
 
+import com.br.fullstack.M1S12.controller.dto.request.NotasRequest;
+import com.br.fullstack.M1S12.controller.dto.response.NotasResponse;
 import com.br.fullstack.M1S12.entity.NotasEntity;
+import com.br.fullstack.M1S12.entity.ProfessorEntity;
 import com.br.fullstack.M1S12.repository.DisciplinaMatriculaRepository;
 import com.br.fullstack.M1S12.repository.NotasRepository;
+import com.br.fullstack.M1S12.repository.ProfessorRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.Optional;
+
 import com.br.fullstack.M1S12.entity.DisciplinaMatriculaEntity;
 import com.br.fullstack.M1S12.exception.NotFoundException;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +26,8 @@ public class NotasService {
 
     @Autowired
     private NotasRepository notasRepository;
+    @Autowired
+    private ProfessorRepository professorRepository;
 
     private final DisciplinaMatriculaRepository disciplinaMatriculaRepository;
 
@@ -58,6 +66,21 @@ public class NotasService {
         double novaSomaNotas = somaNotasAtuais - (coeficienteExcluido * valorNotaExcluida);
         log.info("Cálculo da média final atualizado com sucesso.");
         return novaSomaNotas / (1 - coeficienteExcluido);
+    }
+
+    public NotasResponse salvarNota(NotasRequest notasRequest) {
+        NotasEntity notasEntity = new NotasEntity();
+        notasEntity.setDisciplina_matricula_id(notasRequest.disciplina_matricula_id());
+        notasEntity.setNota(notasRequest.nota());
+        notasEntity.setCoeficiente(notasRequest.coeficiente());
+
+        //TODO: RECEBER PROFESSOR DA DISCIPLINA EM QUE A NOTA FOI LANÇADA
+
+        //TODO: FAZER CÁLCULO AUTOMÁTICO DA MÉDIA DO ALUNO NA DISCIPLINA
+
+        NotasEntity notaSalva = notasRepository.save(notasEntity);
+        return new NotasResponse(notaSalva.getId(), notaSalva.getDisciplina_matricula_id(), notaSalva.getProfessor_id(), notaSalva.getNota(), notaSalva.getCoeficiente());
+
     }
 }
 
