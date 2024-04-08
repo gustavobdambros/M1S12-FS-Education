@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -64,9 +65,13 @@ public class DisciplinaService {
         DisciplinaEntity disciplinaExistente = disciplinaRepository.findById(id).orElseThrow(() ->
                 new NotFoundException("Disciplina com o id " + id + " não encontrada."));
 
-        disciplinaExistente.setNome(disciplinaRequest.nome());
-        Optional<ProfessorEntity> professor = professorRepository.findById(disciplinaRequest.professorId());
-        disciplinaExistente.setProfessor(professor.get());
+        if(disciplinaRequest.nome() != null)
+            disciplinaExistente.setNome(disciplinaRequest.nome());
+        if(disciplinaRequest.professorId() != null){
+            ProfessorEntity professor = professorRepository.findById(disciplinaRequest.professorId())
+                    .orElseThrow(() -> new NoSuchElementException("Professor não encontrado com ID: " + disciplinaRequest.professorId()));
+            disciplinaExistente.setProfessor(professor);
+        }
 
         DisciplinaEntity disciplinaAtualizada = disciplinaRepository.save(disciplinaExistente);
         return new DisciplinaResponse(disciplinaAtualizada.getId(), disciplinaAtualizada.getNome(), disciplinaAtualizada.getProfessor());

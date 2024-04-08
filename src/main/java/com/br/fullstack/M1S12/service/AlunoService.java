@@ -48,7 +48,8 @@ public class AlunoService {
     public AlunoResponse salvarAluno(@RequestBody AlunoRequest alunoRequest){
         AlunoEntity alunoEntity = new AlunoEntity();
         alunoEntity.setNome(alunoRequest.nome());
-        alunoEntity.setNascimento(alunoRequest.nascimento());
+        if(alunoRequest.nascimento() != null)
+            alunoEntity.setNascimento(alunoRequest.nascimento());
 
         AlunoEntity alunoSalvo = alunoRepository.save(alunoEntity);
         return new AlunoResponse(alunoSalvo.getId(), alunoSalvo.getNome(), alunoSalvo.getNascimento());
@@ -58,8 +59,10 @@ public class AlunoService {
         AlunoEntity alunoExistente = alunoRepository.findById(id).orElseThrow(
                 () -> new NotFoundException("Aluno com o id " + id + " não encontrado!"));
 
-        alunoExistente.setNome(alunoRequest.nome());
-        alunoExistente.setNascimento(alunoRequest.nascimento());
+        if(alunoRequest.nome() != null)
+            alunoExistente.setNome(alunoRequest.nome());
+        if(alunoRequest.nascimento() != null)
+            alunoExistente.setNascimento(alunoRequest.nascimento());
 
         AlunoEntity alunoAtualizado = alunoRepository.save(alunoExistente);
 
