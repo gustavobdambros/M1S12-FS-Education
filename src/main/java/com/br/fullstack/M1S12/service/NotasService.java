@@ -62,7 +62,7 @@ public class NotasService {
             novaMediaFinal = mediaFinalAtual - (valorNota * coeficiente);
         }
 
-        log.info("Cálculo da média final atualizado com sucesso.");
+        log.info("Cálculo da média final atualizado com sucesso!");
         return novaMediaFinal;
     }
 }
