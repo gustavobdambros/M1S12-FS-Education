@@ -1,5 +1,7 @@
 package com.br.fullstack.M1S12.service;
 
+import com.br.fullstack.M1S12.controller.dto.request.NotasRequest;
+import com.br.fullstack.M1S12.controller.dto.response.NotasResponse;
 import com.br.fullstack.M1S12.entity.NotasEntity;
 import com.br.fullstack.M1S12.repository.DisciplinaMatriculaRepository;
 import com.br.fullstack.M1S12.repository.NotasRepository;
@@ -64,5 +66,37 @@ public class NotasService {
 
         log.info("Cálculo da média final atualizado com sucesso!");
         return novaMediaFinal;
+    }
+
+    public NotasResponse salvarNota(NotasRequest notasRequest) {
+        log.info("Processo de salvamento de nota iniciado.");
+        NotasEntity notasEntity = new NotasEntity();
+        log.info("Nova entidade de notas criada");
+        log.info("Validando existencia da matrícula.");
+        DisciplinaMatriculaEntity matricula = validarExistenciaMatricula(notasRequest.disciplina_matricula_id());
+        log.info("ID de matrícula recebida como atributo.");
+        notasEntity.setDisciplina_matricula_id(matricula);
+        notasEntity.setNota(notasRequest.nota());
+        notasEntity.setCoeficiente(notasRequest.coeficiente());
+
+        notasEntity.setProfessor_id(matricula.getDisciplina().getProfessor());
+
+        log.info("Atributos recebidos na nova entidade de notas.");
+
+        log.info("A média será recalculada com a nova nota adicionada ao sistema.");
+
+        recalcularMediaFinal(notasEntity.getDisciplina_matricula_id(), notasEntity.getCoeficiente(), notasEntity.getNota(), true);
+
+        log.info("Salvando nota no sistema...");
+        NotasEntity notaSalva = notasRepository.save(notasEntity);
+        log.info("Nota salva no sistema com sucesso.");
+        return new NotasResponse(notaSalva.getId(), notaSalva.getDisciplina_matricula_id(), notaSalva.getProfessor_id(), notaSalva.getNota(), notaSalva.getCoeficiente());
+    }
+
+    private DisciplinaMatriculaEntity validarExistenciaMatricula(Long id) {
+        DisciplinaMatriculaEntity matricula = notasRepository.findById(id).map(
+                NotasEntity::getDisciplina_matricula_id).orElseThrow(
+                () -> new NotFoundException("Nota não encontrada com o ID: " + id));
+        return matricula;
     }
 }
