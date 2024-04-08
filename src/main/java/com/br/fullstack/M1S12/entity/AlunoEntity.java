@@ -24,6 +24,6 @@ public class AlunoEntity {
     @Column(nullable = false)
     String nome;
 
-    @Column(nullable = false)
+    @Column()
     Date nascimento;
 }

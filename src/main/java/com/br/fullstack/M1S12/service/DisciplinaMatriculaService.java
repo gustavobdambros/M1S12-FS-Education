@@ -2,6 +2,7 @@ package com.br.fullstack.M1S12.service;
 
 
 import com.br.fullstack.M1S12.controller.dto.request.DisciplinaMatriculaRequest;
+import com.br.fullstack.M1S12.controller.dto.response.MediaGeralAlunoResponse;
 import com.br.fullstack.M1S12.entity.AlunoEntity;
 import com.br.fullstack.M1S12.entity.DisciplinaEntity;
 import com.br.fullstack.M1S12.entity.DisciplinaMatriculaEntity;
@@ -17,9 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -70,12 +69,15 @@ public class DisciplinaMatriculaService {
         Optional<DisciplinaEntity> disciplina = disciplinaRepository.findById(disciplinaMatriculaRequest.disciplinaId());
         logger.info("Entidade disciplina recuperada do banco: {}", disciplina);
 
-        return mapDtoToEntity(disciplinaMatriculaRequest, aluno.get(), disciplina.get());
+        if(disciplinaMatriculaRequest.mediaFinal() != null)
+            return mapDtoToEntity(disciplinaMatriculaRequest.mediaFinal(), aluno.get(), disciplina.get());
+        else
+            return mapDtoToEntity(0d, aluno.get(), disciplina.get());
     }
 
-    private DisciplinaMatriculaEntity mapDtoToEntity(DisciplinaMatriculaRequest disciplinaMatriculaRequest, AlunoEntity aluno, DisciplinaEntity disciplina) {
+    private DisciplinaMatriculaEntity mapDtoToEntity(Double mediaFinal, AlunoEntity aluno, DisciplinaEntity disciplina) {
         logger.info("Iniciado processo de mapeamento do DTO para Entity");
-        DisciplinaMatriculaEntity disciplinaMatriculaEntity = new DisciplinaMatriculaEntity(aluno, disciplina, LocalDate.now(), disciplinaMatriculaRequest.mediaFinal());
+        DisciplinaMatriculaEntity disciplinaMatriculaEntity = new DisciplinaMatriculaEntity(aluno, disciplina, LocalDate.now(), mediaFinal);
         logger.info("Finalizado processo de mapeamento do DTO para Entity. Retornando entidade: {}", disciplinaMatriculaEntity);
         return disciplinaMatriculaEntity;
     }
@@ -103,10 +105,6 @@ public class DisciplinaMatriculaService {
             throw new IllegalStateException("Matricula com ID " + id + " já possui nota(s)! Não é possível realizar a deleção neste caso.");
         }
         logger.info("Possibilidade da exclusão da matricula validada com sucesso.");
-    }
-
-    public List<DisciplinaMatriculaEntity> listarDisciplinaMatricula() {
-        return disciplinaMatriculaRepository.findAll();
     }
 
     public ResponseEntity<?> buscarDisciplinaMatriculaPorId(Long matriculaId) {
@@ -173,5 +171,36 @@ public class DisciplinaMatriculaService {
             throw new NoSuchElementException("Disciplina não encontrado com ID: " + disciplinaId);
         }
         logger.info("Disciplina encontrada no banco.");
+    }
+
+    public ResponseEntity<?> recuperaMediasDisciplinasJuntoComMediaGeralPorAlunoId(Long alunoId){
+        logger.info("Chamando método de busca de todas as matriculas do aluno para calculo da media geral");
+        List<DisciplinaMatriculaEntity> listaMatriculasAluno = buscarTodasDisciplinaMatriculasPorAlunoId(alunoId);
+
+        List<Map<String, Double>> mediasPorDisciplina = new ArrayList<>();
+
+        logger.info("Montando estrutura de retorno, mapeando notas por disciplina.");
+        for (DisciplinaMatriculaEntity matricula : listaMatriculasAluno){
+            Map<String, Double> mediaDisciplina = Map.of("Disciplina - " + matricula.getDisciplina().getNome(), matricula.getMediaFinal());
+            mediasPorDisciplina.add(mediaDisciplina);
+        }
+
+        Double mediaGeral = calculaMediaGeral(listaMatriculasAluno);
+
+        logger.info("Média geral calculada: {}", mediaGeral);
+
+        MediaGeralAlunoResponse mediaGeralAlunoResponse = new MediaGeralAlunoResponse(alunoId, listaMatriculasAluno.getFirst().getAluno().getNome(), mediasPorDisciplina, mediaGeral);
+
+
+        return ResponseEntity.ok(mediaGeralAlunoResponse);
+    }
+
+    private Double calculaMediaGeral(List<DisciplinaMatriculaEntity> listaMatriculasAluno){
+        logger.info("Calculando média final do aluno.");
+        Double somasMedias = 0D;
+        for (DisciplinaMatriculaEntity matricula : listaMatriculasAluno){
+            somasMedias += matricula.getMediaFinal();
+        }
+        return somasMedias / listaMatriculasAluno.size();
     }
 }

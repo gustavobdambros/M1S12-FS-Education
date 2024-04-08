@@ -5,6 +5,7 @@ package com.br.fullstack.M1S12.controller;
 import com.br.fullstack.M1S12.controller.dto.request.DisciplinaMatriculaRequest;
 import com.br.fullstack.M1S12.entity.DisciplinaMatriculaEntity;
 import com.br.fullstack.M1S12.service.DisciplinaMatriculaService;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +26,7 @@ public class DisciplinaMatriculaController {
     private static Logger logger = LoggerFactory.getLogger(DisciplinaMatriculaController.class);
 
     @PostMapping
-    public DisciplinaMatriculaEntity criarDisciplinaMatricula(@RequestBody DisciplinaMatriculaRequest disciplinaMatricula) {
+    public DisciplinaMatriculaEntity criarDisciplinaMatricula(@RequestBody @Valid DisciplinaMatriculaRequest disciplinaMatricula) {
         logger.info("Recebendo chamada POST no endpoint /matricula. Dados recebidos: " + disciplinaMatricula.toString());
         DisciplinaMatriculaEntity disciplinaMatriculaReturn = disciplinaMatriculaService.criarDisciplinaMatricula(disciplinaMatricula);
         logger.info("Finalizando chamada POST no endpoint /matricula. Dados retornados: " + disciplinaMatriculaReturn.toString());
@@ -40,23 +41,35 @@ public class DisciplinaMatriculaController {
         return responseEntity;
     }
 
-    @GetMapping
-    public List<DisciplinaMatriculaEntity> listarDisciplinaMatricula(){
-        return disciplinaMatriculaService.listarDisciplinaMatricula();
-    }
-
     @GetMapping("/{matriculaId}")
     public ResponseEntity<?> buscarDisciplinaMatriculaPorId(@PathVariable Long matriculaId){
-        return disciplinaMatriculaService.buscarDisciplinaMatriculaPorId(matriculaId);
+        logger.info("Recebendo chamada GET no endpoint /matricula/{matriculaId}. Dados recebidos: " + matriculaId);
+        ResponseEntity<?> responseEntity = disciplinaMatriculaService.buscarDisciplinaMatriculaPorId(matriculaId);
+        logger.info("Finalizada chamada GET no endpoint /matricula/{matriculaId}. Retornando dados: {}", responseEntity);
+        return responseEntity;
     }
 
     @GetMapping("/alunoId/{alunoId}")
     public List<DisciplinaMatriculaEntity> buscarTodasDisciplinaMatriculasPorAlunoId(@PathVariable Long alunoId){
-        return disciplinaMatriculaService.buscarTodasDisciplinaMatriculasPorAlunoId(alunoId);
+        logger.info("Recebendo chamada GET no endpoint /matricula/alunoId/{alunoId}. Dados recebidos: " + alunoId);
+        List<DisciplinaMatriculaEntity> listaMatriculasAluno = disciplinaMatriculaService.buscarTodasDisciplinaMatriculasPorAlunoId(alunoId);
+        logger.info("Finalizada chamada GET no endpoint /matricula/alunoId/{alunoId}. Retornando dados: {}", listaMatriculasAluno);
+        return listaMatriculasAluno;
     }
 
     @GetMapping("/disciplinaId/{disciplinaId}")
     public List<DisciplinaMatriculaEntity> buscarTodasDisciplinaMatriculasPorDisciplinaId(@PathVariable Long disciplinaId){
-        return disciplinaMatriculaService.buscarTodasDisciplinaMatriculasPorDisciplinaId(disciplinaId);
+        logger.info("Recebendo chamada GET no endpoint /matricula/disciplinaId/{disciplinaId}. Dados recebidos: " + disciplinaId);
+        List<DisciplinaMatriculaEntity> listaMatriculasDisciplinas = disciplinaMatriculaService.buscarTodasDisciplinaMatriculasPorDisciplinaId(disciplinaId);
+        logger.info("Finalizada chamada GET no endpoint /matricula/disciplinaId/{disciplinaId}. Retornando dados: {}", listaMatriculasDisciplinas);
+        return listaMatriculasDisciplinas;
+    }
+
+    @GetMapping("/alunoId/mediaFinal/{alunoId}")
+    public ResponseEntity<?> calculaMediaFinalPorAlunoId(@PathVariable Long alunoId){
+        logger.info("Recebendo chamada GET no endpoint /matricula/alunoId/mediaFinal/{alunoId}. Dados recebidos: " + alunoId);
+        ResponseEntity<?> mediaFinalPorAlunoId = disciplinaMatriculaService.recuperaMediasDisciplinasJuntoComMediaGeralPorAlunoId(alunoId);
+        logger.info("Finalizada chamada GET no endpoint /matricula/alunoId/mediaFinal/{alunoId}. Retornando dados: {}", mediaFinalPorAlunoId);
+        return mediaFinalPorAlunoId;
     }
 }
