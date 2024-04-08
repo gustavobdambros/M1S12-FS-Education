@@ -1,11 +1,14 @@
 package com.br.fullstack.M1S12.controller;
 
+import com.br.fullstack.M1S12.controller.dto.request.NotasRequest;
+import com.br.fullstack.M1S12.controller.dto.response.NotasResponse;
 import com.br.fullstack.M1S12.entity.NotasEntity;
 import com.br.fullstack.M1S12.service.NotasService;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -34,6 +37,14 @@ public class NotasController {
         }
         logger.info("Notas encontradas para a matrícula ID: {}", matriculaId);
         return ResponseEntity.ok(notas);
+    }
+
+    @PostMapping
+    public ResponseEntity<NotasResponse> salvarNota(@RequestBody NotasRequest notasRequest) {
+        log.info("Requisição para salvar nova nota: {}", notasRequest);
+        NotasResponse notaSalva = notasService.salvarNota(notasRequest);
+        log.info("Nova nota criada com sucesso.");
+        return ResponseEntity.status(HttpStatus.CREATED).body(notaSalva);
     }
 
     @DeleteMapping("{id}")
