@@ -39,7 +39,7 @@ public class NotasService {
         log.info("Atualizando os dados para recalcular a média final...");
         double coeficiente = notasRepository.findById(id).get().getCoeficiente();
         double valorNota = notasRepository.findById(id).get().getNota();
-        double novaMediaFinal = recalcularMediaFinalDelete(matricula, coeficiente, valorNota);
+        double novaMediaFinal = recalcularMediaFinal(matricula, coeficiente, valorNota,false);
 
         log.info("Salvando matrícula atualizada no banco de dados...");
         matricula.setMediaFinal(novaMediaFinal);
@@ -51,13 +51,18 @@ public class NotasService {
         return ResponseEntity.noContent().build();
     }
 
-    private double recalcularMediaFinalDelete(DisciplinaMatriculaEntity matricula, double coeficienteExcluido, double valorNotaExcluida) {
+    private double recalcularMediaFinal(DisciplinaMatriculaEntity matricula, double coeficiente, double valorNota, boolean adicionarNota) {
         log.info("Recalculando média final...");
         double mediaFinalAtual = matricula.getMediaFinal();
-        double somaNotasAtuais = mediaFinalAtual * (1 - coeficienteExcluido);
-        double novaSomaNotas = somaNotasAtuais - (coeficienteExcluido * valorNotaExcluida);
-        log.info("Cálculo da média final atualizado com sucesso.");
-        return novaSomaNotas / (1 - coeficienteExcluido);
+        double novaMediaFinal;
+
+        if (adicionarNota) {
+            novaMediaFinal = mediaFinalAtual + (valorNota * coeficiente);
+        } else {
+            novaMediaFinal = mediaFinalAtual - (valorNota * coeficiente);
+        }
+
+        log.info("Cálculo da média final atualizado com sucesso!");
+        return novaMediaFinal;
     }
 }
-
