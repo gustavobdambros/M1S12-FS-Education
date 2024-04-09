@@ -15,15 +15,13 @@ import java.util.Date;
 @Data
 public class AlunoEntity {
 
+    @Column(nullable = false)
+    String nome;
+    @Column()
+    Date nascimento;
     @Id
     @Setter(AccessLevel.NONE)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "alunos_id_seq")
     @SequenceGenerator(name = "alunos_id_seq", sequenceName = "alunos_id_seq", allocationSize = 1)
     private Long id;
-
-    @Column(nullable = false)
-    String nome;
-
-    @Column()
-    Date nascimento;
 }

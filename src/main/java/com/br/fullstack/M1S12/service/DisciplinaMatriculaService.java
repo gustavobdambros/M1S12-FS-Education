@@ -24,19 +24,15 @@ import java.util.*;
 @Service
 public class DisciplinaMatriculaService {
 
+    private static final Logger logger = LoggerFactory.getLogger(DisciplinaMatriculaService.class);
     @Autowired
     private DisciplinaMatriculaRepository disciplinaMatriculaRepository;
-
     @Autowired
     private AlunoRepository alunoRepository;
-
     @Autowired
     private DisciplinaRepository disciplinaRepository;
-
     @Autowired
     private NotasRepository notasRepository;
-
-    private static final Logger logger = LoggerFactory.getLogger(DisciplinaMatriculaService.class);
 
     public DisciplinaMatriculaEntity criarDisciplinaMatricula(DisciplinaMatriculaRequest disciplinaMatricula) {
         logger.info("Iniciado processo de realizacao de matricula. Dados recebidos {}", disciplinaMatricula);
@@ -69,7 +65,7 @@ public class DisciplinaMatriculaService {
         Optional<DisciplinaEntity> disciplina = disciplinaRepository.findById(disciplinaMatriculaRequest.disciplinaId());
         logger.info("Entidade disciplina recuperada do banco: {}", disciplina);
 
-        if(disciplinaMatriculaRequest.mediaFinal() != null)
+        if (disciplinaMatriculaRequest.mediaFinal() != null)
             return mapDtoToEntity(disciplinaMatriculaRequest.mediaFinal(), aluno.get(), disciplina.get());
         else
             return mapDtoToEntity(0d, aluno.get(), disciplina.get());
@@ -173,14 +169,14 @@ public class DisciplinaMatriculaService {
         logger.info("Disciplina encontrada no banco.");
     }
 
-    public ResponseEntity<?> recuperaMediasDisciplinasJuntoComMediaGeralPorAlunoId(Long alunoId){
+    public ResponseEntity<?> recuperaMediasDisciplinasJuntoComMediaGeralPorAlunoId(Long alunoId) {
         logger.info("Chamando método de busca de todas as matriculas do aluno para calculo da media geral");
         List<DisciplinaMatriculaEntity> listaMatriculasAluno = buscarTodasDisciplinaMatriculasPorAlunoId(alunoId);
 
         List<Map<String, Double>> mediasPorDisciplina = new ArrayList<>();
 
         logger.info("Montando estrutura de retorno, mapeando notas por disciplina.");
-        for (DisciplinaMatriculaEntity matricula : listaMatriculasAluno){
+        for (DisciplinaMatriculaEntity matricula : listaMatriculasAluno) {
             Map<String, Double> mediaDisciplina = Map.of("Disciplina - " + matricula.getDisciplina().getNome(), matricula.getMediaFinal());
             mediasPorDisciplina.add(mediaDisciplina);
         }
@@ -195,10 +191,10 @@ public class DisciplinaMatriculaService {
         return ResponseEntity.ok(mediaGeralAlunoResponse);
     }
 
-    private Double calculaMediaGeral(List<DisciplinaMatriculaEntity> listaMatriculasAluno){
+    private Double calculaMediaGeral(List<DisciplinaMatriculaEntity> listaMatriculasAluno) {
         logger.info("Calculando média final do aluno.");
         Double somasMedias = 0D;
-        for (DisciplinaMatriculaEntity matricula : listaMatriculasAluno){
+        for (DisciplinaMatriculaEntity matricula : listaMatriculasAluno) {
             somasMedias += matricula.getMediaFinal();
         }
         return somasMedias / listaMatriculasAluno.size();

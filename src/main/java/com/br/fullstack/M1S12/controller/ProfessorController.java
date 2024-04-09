@@ -20,7 +20,6 @@ import java.util.List;
 public class ProfessorController {
 
     private final ProfessorService professorService;
-    private static Logger logger = LoggerFactory.getLogger(ProfessorController.class);
 
     @GetMapping
     public ResponseEntity<List<ProfessorResponse>> retornarProfessores() {

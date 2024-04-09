@@ -1,7 +1,6 @@
 package com.br.fullstack.M1S12.controller;
 
 
-
 import com.br.fullstack.M1S12.controller.dto.request.DisciplinaMatriculaRequest;
 import com.br.fullstack.M1S12.entity.DisciplinaMatriculaEntity;
 import com.br.fullstack.M1S12.service.DisciplinaMatriculaService;
@@ -20,10 +19,9 @@ import java.util.List;
 @Slf4j
 public class DisciplinaMatriculaController {
 
+    private static final Logger logger = LoggerFactory.getLogger(DisciplinaMatriculaController.class);
     @Autowired
     private DisciplinaMatriculaService disciplinaMatriculaService;
-
-    private static Logger logger = LoggerFactory.getLogger(DisciplinaMatriculaController.class);
 
     @PostMapping
     public DisciplinaMatriculaEntity criarDisciplinaMatricula(@RequestBody @Valid DisciplinaMatriculaRequest disciplinaMatricula) {
@@ -42,7 +40,7 @@ public class DisciplinaMatriculaController {
     }
 
     @GetMapping("/{matriculaId}")
-    public ResponseEntity<?> buscarDisciplinaMatriculaPorId(@PathVariable Long matriculaId){
+    public ResponseEntity<?> buscarDisciplinaMatriculaPorId(@PathVariable Long matriculaId) {
         logger.info("Recebendo chamada GET no endpoint /matricula/{matriculaId}. Dados recebidos: " + matriculaId);
         ResponseEntity<?> responseEntity = disciplinaMatriculaService.buscarDisciplinaMatriculaPorId(matriculaId);
         logger.info("Finalizada chamada GET no endpoint /matricula/{matriculaId}. Retornando dados: {}", responseEntity);
@@ -50,7 +48,7 @@ public class DisciplinaMatriculaController {
     }
 
     @GetMapping("/alunoId/{alunoId}")
-    public List<DisciplinaMatriculaEntity> buscarTodasDisciplinaMatriculasPorAlunoId(@PathVariable Long alunoId){
+    public List<DisciplinaMatriculaEntity> buscarTodasDisciplinaMatriculasPorAlunoId(@PathVariable Long alunoId) {
         logger.info("Recebendo chamada GET no endpoint /matricula/alunoId/{alunoId}. Dados recebidos: " + alunoId);
         List<DisciplinaMatriculaEntity> listaMatriculasAluno = disciplinaMatriculaService.buscarTodasDisciplinaMatriculasPorAlunoId(alunoId);
         logger.info("Finalizada chamada GET no endpoint /matricula/alunoId/{alunoId}. Retornando dados: {}", listaMatriculasAluno);
@@ -58,15 +56,15 @@ public class DisciplinaMatriculaController {
     }
 
     @GetMapping("/disciplinaId/{disciplinaId}")
-    public List<DisciplinaMatriculaEntity> buscarTodasDisciplinaMatriculasPorDisciplinaId(@PathVariable Long disciplinaId){
+    public List<DisciplinaMatriculaEntity> buscarTodasDisciplinaMatriculasPorDisciplinaId(@PathVariable Long disciplinaId) {
         logger.info("Recebendo chamada GET no endpoint /matricula/disciplinaId/{disciplinaId}. Dados recebidos: " + disciplinaId);
         List<DisciplinaMatriculaEntity> listaMatriculasDisciplinas = disciplinaMatriculaService.buscarTodasDisciplinaMatriculasPorDisciplinaId(disciplinaId);
         logger.info("Finalizada chamada GET no endpoint /matricula/disciplinaId/{disciplinaId}. Retornando dados: {}", listaMatriculasDisciplinas);
         return listaMatriculasDisciplinas;
     }
 
-    @GetMapping("/alunoId/mediaFinal/{alunoId}")
-    public ResponseEntity<?> calculaMediaFinalPorAlunoId(@PathVariable Long alunoId){
+    @GetMapping("/alunoId/{alunoId}/mediaGeral")
+    public ResponseEntity<?> calculaMediaFinalPorAlunoId(@PathVariable Long alunoId) {
         logger.info("Recebendo chamada GET no endpoint /matricula/alunoId/mediaFinal/{alunoId}. Dados recebidos: " + alunoId);
         ResponseEntity<?> mediaFinalPorAlunoId = disciplinaMatriculaService.recuperaMediasDisciplinasJuntoComMediaGeralPorAlunoId(alunoId);
         logger.info("Finalizada chamada GET no endpoint /matricula/alunoId/mediaFinal/{alunoId}. Retornando dados: {}", mediaFinalPorAlunoId);

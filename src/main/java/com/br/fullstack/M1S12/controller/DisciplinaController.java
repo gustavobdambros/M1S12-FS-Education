@@ -2,7 +2,6 @@ package com.br.fullstack.M1S12.controller;
 
 import com.br.fullstack.M1S12.controller.dto.request.DisciplinaRequest;
 import com.br.fullstack.M1S12.controller.dto.response.DisciplinaResponse;
-import com.br.fullstack.M1S12.entity.DisciplinaEntity;
 import com.br.fullstack.M1S12.service.DisciplinaService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +21,6 @@ public class DisciplinaController {
 
     //INJEÇÃO DE DEPENDÊNCIAS
     private final DisciplinaService disciplinaService;
-    private static Logger logger = LoggerFactory.getLogger(DisciplinaController.class);
 
     //CRUD
     @GetMapping
