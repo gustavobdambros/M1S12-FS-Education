@@ -30,7 +30,7 @@ public class DisciplinaService {
         List<DisciplinaEntity> listaDisciplinasEntity = disciplinaRepository.findAll();
         List<DisciplinaResponse> listaDisciplinasResponse = new ArrayList<>();
 
-        if(listaDisciplinasEntity.isEmpty()) {
+        if (listaDisciplinasEntity.isEmpty()) {
             throw new NotFoundException("Não há disciplinas no banco de dados.");
         }
 
@@ -65,9 +65,9 @@ public class DisciplinaService {
         DisciplinaEntity disciplinaExistente = disciplinaRepository.findById(id).orElseThrow(() ->
                 new NotFoundException("Disciplina com o id " + id + " não encontrada."));
 
-        if(disciplinaRequest.nome() != null)
+        if (disciplinaRequest.nome() != null)
             disciplinaExistente.setNome(disciplinaRequest.nome());
-        if(disciplinaRequest.professorId() != null){
+        if (disciplinaRequest.professorId() != null) {
             ProfessorEntity professor = professorRepository.findById(disciplinaRequest.professorId())
                     .orElseThrow(() -> new NoSuchElementException("Professor não encontrado com ID: " + disciplinaRequest.professorId()));
             disciplinaExistente.setProfessor(professor);

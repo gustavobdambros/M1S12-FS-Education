@@ -11,10 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+
 import java.util.List;
 
 @RestController
@@ -22,10 +19,9 @@ import java.util.List;
 @RequestMapping("/notas")
 public class NotasController {
 
+    private static final Logger logger = LoggerFactory.getLogger(NotasController.class);
     @Autowired
     private NotasService notasService;
-
-    private static final Logger logger = LoggerFactory.getLogger(NotasController.class);
 
     @GetMapping("/matricula/{matriculaId}")
     public ResponseEntity<List<NotasEntity>> buscarNotasPorMatricula(@PathVariable Long matriculaId) {
@@ -48,7 +44,7 @@ public class NotasController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<?> deletarNota(@PathVariable Long id){
+    public ResponseEntity<?> deletarNota(@PathVariable Long id) {
         log.info("Chamada para DELETE no endpoint /nota/{id} recebida. ID: " + id);
         ResponseEntity<?> responseEntity = notasService.deletarNota(id);
         log.info("Finalizada chamada DELETE no endpoint /nota/{id}. Nota com o id " + id + "deletada com sucesso.");

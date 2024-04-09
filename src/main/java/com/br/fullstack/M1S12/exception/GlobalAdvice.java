@@ -47,7 +47,7 @@ public class GlobalAdvice {
             errorMessage = ("O corpo da solicitação é obrigatório e está ausente.");
         }
 
-        if(ex.getMostSpecificCause() instanceof IllegalArgumentException exception){
+        if (ex.getMostSpecificCause() instanceof IllegalArgumentException exception) {
             errorMessage = exception.getMessage();
         }
 

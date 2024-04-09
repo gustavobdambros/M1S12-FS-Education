@@ -20,7 +20,6 @@ import java.util.List;
 public class AlunoController {
 
     private final AlunoService alunoService;
-    private static Logger logger = LoggerFactory.getLogger(AlunoController.class);
 
     @GetMapping
     public ResponseEntity<List<AlunoResponse>> retornarAlunos() {
@@ -31,7 +30,7 @@ public class AlunoController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<AlunoResponse> buscarAlunoPorId(@PathVariable Long id){
+    public ResponseEntity<AlunoResponse> buscarAlunoPorId(@PathVariable Long id) {
         log.info("Requisição para buscar aluno por ID: {}", id);
         AlunoResponse alunoEncontrado = alunoService.buscarAlunoPorId(id);
         log.info("Busca por aluno com ID {} concluída", id);
@@ -39,7 +38,7 @@ public class AlunoController {
     }
 
     @PostMapping
-    public ResponseEntity<AlunoResponse> salvarAluno(@RequestBody AlunoRequest alunoRequest){
+    public ResponseEntity<AlunoResponse> salvarAluno(@RequestBody AlunoRequest alunoRequest) {
         log.info("Requisição para salvar novo aluno: {}", alunoRequest);
         AlunoResponse alunoSalvo = alunoService.salvarAluno(alunoRequest);
         log.info("Novo aluno salvo com sucesso.");
@@ -47,7 +46,7 @@ public class AlunoController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<AlunoResponse> atualizarAluno(@PathVariable Long id, @RequestBody AlunoRequest alunoRequest){
+    public ResponseEntity<AlunoResponse> atualizarAluno(@PathVariable Long id, @RequestBody AlunoRequest alunoRequest) {
         log.info("Requisição para atualizar aluno com ID {}: {}", id, alunoRequest);
         ResponseEntity<AlunoResponse> responseEntity = ResponseEntity.ok(alunoService.atualizarAluno(id, alunoRequest));
         log.info("Aluno atualizado com sucesso. ID: {}", id);
@@ -55,7 +54,7 @@ public class AlunoController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<Void> excluirAluno(@PathVariable Long id){
+    public ResponseEntity<Void> excluirAluno(@PathVariable Long id) {
         log.info("Requisição para excluir aluno com ID: {}", id);
         alunoService.excluirAluno(id);
         log.info("Aluno excluído com sucesso. ID: {}", id);

@@ -2,7 +2,9 @@ package com.br.fullstack.M1S12.repository;
 
 
 import com.br.fullstack.M1S12.entity.DisciplinaMatriculaEntity;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -20,4 +22,9 @@ public interface DisciplinaMatriculaRepository extends JpaRepository<DisciplinaM
 
     @Query("SELECT dm FROM DisciplinaMatriculaEntity dm WHERE dm.disciplina.id = :disciplinaId")
     List<DisciplinaMatriculaEntity> buscaTodasPorDisciplinaId(@Param("disciplinaId") Long disciplinaId);
+
+    @Transactional
+    @Modifying
+    @Query("UPDATE DisciplinaMatriculaEntity dm SET dm.mediaFinal = :mediaFinal WHERE dm.id = :matriculaId")
+    void atualizaMediaFinalPorMatriculaId(@Param("matriculaId") Long matriculaId, @Param("mediaFinal") Double mediaFinal);
 }

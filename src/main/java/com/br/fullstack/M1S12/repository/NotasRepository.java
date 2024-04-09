@@ -18,5 +18,9 @@ public interface NotasRepository extends JpaRepository<NotasEntity, Long> {
     @Query("SELECT n FROM NotasEntity n WHERE n.disciplina_matricula_id.id = :matriculaId")
     List<NotasEntity> buscarNotasPorMatriculaId(@Param("matriculaId") Long matriculaId);
 
+    @Query("SELECT n.coeficiente FROM NotasEntity n WHERE n.disciplina_matricula_id.id = :matriculaId")
+    List<Double> buscarCoeficientesPorMatriculaId(@Param("matriculaId") Long matriculaId);
+
+
 }
 
