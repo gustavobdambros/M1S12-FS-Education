@@ -1,9 +1,10 @@
 package com.br.fullstack.M1S12.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
+@Getter
+@Setter
 @Entity
 @Table(name = "disciplinas")
 @Data
@@ -11,14 +12,15 @@ import lombok.RequiredArgsConstructor;
 public class DisciplinaEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Setter(AccessLevel.NONE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "disciplinas_id_seq")
+    @SequenceGenerator(name = "disciplinas_id_seq", sequenceName = "disciplinas_id_seq", allocationSize = 1)
     private Long id;
 
     @Column(nullable = false)
     private String nome;
 
-    @Column(nullable = false)
-    @OneToMany
-    @JoinColumn(name = "professor_id")
+    @ManyToOne()
+    @JoinColumn(name = "professores_id")
     private ProfessorEntity professor;
 }
